@@ -16,7 +16,6 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 def get_advanced_stats(username, token):
     url = "https://api.github.com/graphql"
     headers = {"Authorization": f"Bearer {token}"}
-    # AGGIUNTO: Ricerca estesa a COLLABORATOR e ORGANIZATION_MEMBER
     query = """
     query($login: String!) {
       user(login: $login) {
@@ -73,7 +72,6 @@ def get_advanced_stats(username, token):
 def get_top_languages(username, token):
     url = "https://api.github.com/graphql"
     headers = {"Authorization": f"Bearer {token}"}
-    # AGGIUNTO: Ricerca estesa a COLLABORATOR e ORGANIZATION_MEMBER
     query = """
     query($login: String!) {
       user(login: $login) {
@@ -241,14 +239,14 @@ def get_stats():
         <g transform="translate(35, 105)">
             <g class="stat-row" style="animation-delay:0.25s; --gc: #f9e2af">
                 <path class="glow" d="M 0 -8 L 2.3 -3.3 L 7.5 -2.5 L 3.8 1.2 L 4.6 6.3 L 0 4 L -4.6 6.3 L -3.8 1.2 L -7.5 -2.5 L -2.3 -3.3 Z" transform="translate(10, -4)" fill="#f9e2af"/>
-                <text x="35" y="0" class="text-base">Stelle Ricevute:</text>
+                <text x="35" y="0" class="text-base">Total Stars:</text>
                 <text x="210" y="0" class="text-base text-bold" style="fill: #f9e2af;">{stats['stars']}</text>
             </g>
         </g>
         <g transform="translate(35, 135)">
             <g class="stat-row" style="animation-delay:0.4s; --gc: #a6e3a1">
                 <path class="glow" d="M -6 0 A 6 6 0 1 0 6 0 A 6 6 0 1 0 -6 0 M 0 -3 L 0 3 M -3 0 L 3 0" transform="translate(10, -4)" stroke="#a6e3a1" stroke-width="2" fill="none" stroke-linecap="round"/>
-                <text x="35" y="0" class="text-base">Contributi (1 anno):</text>
+                <text x="35" y="0" class="text-base">Contributions (1 yr):</text>
                 <text x="210" y="0" class="text-base text-bold" style="fill: #a6e3a1;">{stats['yearly']}</text>
             </g>
         </g>
@@ -258,15 +256,15 @@ def get_stats():
                     <circle class="glow" cx="0" cy="0" r="6" stroke="#89b4fa" stroke-width="2" fill="none"/>
                     <circle cx="0" cy="0" r="2" fill="#89b4fa"/>
                 </g>
-                <text x="35" y="0" class="text-base">Issue Create:</text>
+                <text x="35" y="0" class="text-base">Issues Created:</text>
                 <text x="210" y="0" class="text-base text-bold" style="fill: #89b4fa;">{stats['issues']}</text>
             </g>
         </g>
         <g transform="translate(35, 195)">
             <g class="stat-row" style="animation-delay:0.7s; --gc: #f38ba8">
                 <path class="glow" d="M 0 5 C -4 5 -7 1 -7 -3 C -7 -7 0 -13 0 -13 C 0 -13 7 -7 7 -3 C 7 1 4 5 0 5 Z" transform="translate(10, -4)" fill="#f38ba8"/>
-                <text x="35" y="0" class="text-base">Streak Attuale:</text>
-                <text x="210" y="0" class="text-base text-bold" style="fill: #f38ba8;">{stats['streak']} giorni</text>
+                <text x="35" y="0" class="text-base">Current Streak:</text>
+                <text x="210" y="0" class="text-base text-bold" style="fill: #f38ba8;">{stats['streak']} days</text>
             </g>
         </g>
     </svg>
