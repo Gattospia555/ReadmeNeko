@@ -16,11 +16,12 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 def get_advanced_stats(username, token):
     url = "https://api.github.com/graphql"
     headers = {"Authorization": f"Bearer {token}"}
+    # AGGIUNTO: Ricerca estesa a COLLABORATOR e ORGANIZATION_MEMBER
     query = """
     query($login: String!) {
       user(login: $login) {
         issues { totalCount }
-        repositories(first: 100, ownerAffiliations: OWNER, orderBy: {field: STARGAZERS, direction: DESC}) {
+        repositories(first: 100, ownerAffiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER], orderBy: {field: STARGAZERS, direction: DESC}) {
           nodes { stargazerCount }
         }
         contributionsCollection {
@@ -72,11 +73,11 @@ def get_advanced_stats(username, token):
 def get_top_languages(username, token):
     url = "https://api.github.com/graphql"
     headers = {"Authorization": f"Bearer {token}"}
-    # La query prende TUTTI i repo di cui sei OWNER. (Richiede il permesso "repo" nel token per quelli privati)
+    # AGGIUNTO: Ricerca estesa a COLLABORATOR e ORGANIZATION_MEMBER
     query = """
     query($login: String!) {
       user(login: $login) {
-        repositories(first: 100, ownerAffiliations: OWNER, isFork: false, orderBy: {field: PUSHED_AT, direction: DESC}) {
+        repositories(first: 100, ownerAffiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER], isFork: false, orderBy: {field: PUSHED_AT, direction: DESC}) {
           nodes {
             languages(first: 10, orderBy: {field: SIZE, direction: DESC}) {
               edges {
@@ -157,7 +158,6 @@ def generate_stars(num_stars=55):
 
 
 def get_base_svg(title):
-    """Crea la base comune passandogli dinamicamente il Titolo."""
     stars_elements = generate_stars(55)
     return f"""
         <style>
@@ -233,7 +233,7 @@ def get_stats():
         return "Errore: Username mancante", 400
 
     stats = get_advanced_stats(username, GITHUB_TOKEN)
-    base_svg = get_base_svg(username)  # Qui il titolo è l'username
+    base_svg = get_base_svg(username)
 
     svg_template = f"""
     <svg width="480" height="240" viewBox="0 0 480 240" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -271,8 +271,6 @@ def get_stats():
         </g>
     </svg>
     """
-
-    # Headers aggiornati per bloccare la cache di GitHub
     return Response(
         svg_template,
         mimetype="image/svg+xml",
@@ -296,7 +294,7 @@ def get_langs():
         return "Errore: Username mancante", 400
 
     langs = get_top_languages(username, GITHUB_TOKEN)
-    base_svg = get_base_svg("Top Languages")  # Titolo pulito
+    base_svg = get_base_svg("Top Languages")
 
     bar_segments = ""
     legend_elements = ""
@@ -307,7 +305,6 @@ def get_langs():
         bar_segments += f'<rect x="{current_x}" y="95" width="{segment_width}" height="14" fill="{lang["color"]}" />\n'
         current_x += segment_width
 
-        # Allineamento ordinato e spaziato per la legenda
         col = idx % 2
         row = idx // 2
         lx = 45 + (col * 200)
@@ -343,7 +340,6 @@ def get_langs():
     </svg>
     """
 
-    # Headers aggiornati per bloccare la cache di GitHub
     return Response(
         svg_template,
         mimetype="image/svg+xml",
